@@ -11,7 +11,10 @@ import About from '../components/About/About';
 import ServiceList from '../components/Services/Services';
 import featureImg from '../assets/images/feature-img.png'
 import Doctors from '../components/Doctors/Doctors';
-
+import faqImg from '../assets/images/faq-img.png'
+import FaqItem from '../components/faq/FaqItem';
+import {faqs} from './../assets/data/faqs';
+import Testimonial from '../components/Testimonial/Testimonial';
 const Home = () => {
   return (
     <>
@@ -155,6 +158,38 @@ const Home = () => {
       </div>
     </section>
      {/*-----------FAQ section end----------- */}
+     <section>
+  <div className='container'>
+    <div className='flex justify-between gap-[50px] lg:gap-0'>
+      <div className='w-1/2 hidden md:block'>
+        <img src={faqImg} alt="FAQ Illustration" />
+      </div>
+      <div className='w-full md:w-1/2'>
+        <h2 className="heading">
+          Most questions by our beloved patients
+        </h2>
+        {faqs.map((item, index) => (
+          <FaqItem key={index} item={item} />
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+{/* -----------FAQ ends here------------ */}
+{/* ------Testimonial------------- */}
+<section>
+  <div className="container">
+    <div className='xl:w-[470px] mx-auto'>
+      <h2 className='heading text-center'>What our patients say?</h2>
+      <p className='text_para text-center'>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolorem odit dolores laudantium? Corporis, ad fugiat?</p>
+    </div>
+    <div className='mt-8'> {/* Add margin-top for spacing */}
+      <Testimonial />
+    </div>
+  </div>
+</section>
+
+{/*--------------Testimonial ends here--------- */}
 
     </>
   );
