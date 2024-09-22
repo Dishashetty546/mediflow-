@@ -10,6 +10,7 @@ import { BsArrowRight } from 'react-icons/bs';
 import About from '../components/About/About';
 import ServiceList from '../components/Services/Services';
 import featureImg from '../assets/images/feature-img.png'
+import Doctors from '../components/Doctors/Doctors';
 
 const Home = () => {
   return (
@@ -142,10 +143,18 @@ const Home = () => {
           <h2 className='heading text-center'>Our great doctors</h2>
           <p className='text_para text-center'>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolorem odit dolores laudantium? Corporis, ad fugiat?</p>
         </div>
+        <Doctors/>
       </div>
     </section>
     
     {/*----our great doctors end----- */}
+    {/*-----------FAQ section----------- */}
+    <section>
+      <div className='container'>
+        
+      </div>
+    </section>
+     {/*-----------FAQ section end----------- */}
 
     </>
   );
