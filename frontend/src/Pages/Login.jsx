@@ -2,7 +2,20 @@ import React from 'react'
 
 const Login = () => {
   return (
-    <div>Login</div>
+    <>
+    <section className='px-5 lg:px-0'>
+      <div className='w-full max-w-[570px]'> 
+        <h2>HELLO welcome back</h2>
+        <form>
+          <div>
+
+          </div>
+        </form>
+      </div>
+
+    </section>
+    </>
+    
   )
 }
 

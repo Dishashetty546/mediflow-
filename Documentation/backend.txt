@@ -1,0 +1,21 @@
+Steps 
+--------------------------------------------------------------------------------------------------------
+1. install all necessary dependencies
+   npm init - initialize backend
+   express
+   mongodb
+   cors
+   jsonwebtoken
+   cookie-parser
+   dotenv
+   bcrypt
+   nodemon
+ understanding its use in this project
+ ----------------------------------------------------------------------------------------------------------------------------
+ 2. creating schema  
+ ----------------------------------------------------------------------------------------------------------------------------
+ 3. set up server - on index.js
+   and .env file
+---------------------------------------------------------------------------------------------------------------------------
+4. connect to database - mongodb  - NOSQL
+
