@@ -12,7 +12,11 @@ const generateToken = (user) => {
     expiresIn: "15d",
   });
 };
+//generate a unique JWT_SECRET
 
+//TERMINAL : NODE
+//const crypto= require("crypto")
+//crypto.randomBytes(256).toString('base64')
 export const register = async (req, res) => {
   const { email, password, name, role, photo, gender } = req.body;
 
