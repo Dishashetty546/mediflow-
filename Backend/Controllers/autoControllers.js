@@ -1,57 +1,117 @@
-//handle registration and Login logic
 import User from "../Models/UserSchema.js";
 import Doctor from "../Models/DoctorSchema.js";
-// import jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import dotenv from "dotenv";
+
+// Load environment variables
+dotenv.config();
+
+const generateToken = (user) => {
+  return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
+    expiresIn: "15d",
+  });
+};
+
 export const register = async (req, res) => {
   const { email, password, name, role, photo, gender } = req.body;
+
   try {
-    let user = null;
-    if (role == "patient") {
-      user = await User.findOne({ email }); // Correct the function and await the result
-    } else if (role == "doctor") {
-      user = await Doctor.findOne({ email }); // Correct the function and await the result
+    // Validate inputs
+    if (!email || !password || !name || !role) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+    if (role !== "patient" && role !== "doctor") {
+      return res.status(400).json({ message: "Invalid role specified" });
     }
 
-    //check if user exist
-    if (user) {
-      return res.status(400).json({ message: "user already exist" });
+    // Check if user exists
+    const userExists =
+      role === "patient"
+        ? await User.findOne({ email })
+        : await Doctor.findOne({ email });
+
+    if (userExists) {
+      return res.status(400).json({ message: "User already exists" });
     }
 
-    //hash password
+    // Hash password
     const salt = await bcrypt.genSalt(10);
-    const hasspassword = await bcrypt.hash(password, salt);
-    if (role == "patient") {
-      user = new User({
-        name,
-        email,
-        password: hasspassword,
-        photo,
-        gender,
-        role,
-      });
-    }
-    if (role == "doctor") {
-      user = new Doctor({
-        name,
-        email,
-        password: hasspassword,
-        photo,
-        gender,
-        role,
-      });
-    }
-    await user.save();
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Create user
+    const newUser =
+      role === "patient"
+        ? new User({
+            name,
+            email,
+            password: hashedPassword,
+            photo,
+            gender,
+            role,
+          })
+        : new Doctor({
+            name,
+            email,
+            password: hashedPassword,
+            photo,
+            gender,
+            role,
+          });
+
+    await newUser.save();
+
     res
-      .status(200)
-      .json({ success: true, message: "user successfully created" });
+      .status(201)
+      .json({ success: true, message: "User successfully created" });
   } catch (err) {
+    console.error("Error in register:", err);
     res
       .status(500)
-      .json({ success: false, message: "Internal server error,Try again" });
+      .json({ success: false, message: "Internal server error, try again" });
   }
 };
+
 export const login = async (req, res) => {
+  const { email, password } = req.body;
+
   try {
-  } catch (err) {}
+    // Validate inputs
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ message: "Email and password are required" });
+    }
+
+    // Find user
+    const user =
+      (await User.findOne({ email })) || (await Doctor.findOne({ email }));
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Compare passwords
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatch) {
+      return res
+        .status(400)
+        .json({ status: false, message: "Invalid credentials" });
+    }
+
+    // Generate token
+    const token = generateToken(user);
+    const { password: hashedPassword, role, appointment, ...rest } = user._doc;
+
+    res.status(200).json({
+      status: true,
+      message: "Successfully logged in",
+      token,
+      data: { ...rest },
+      role,
+    });
+  } catch (err) {
+    console.error("Error in login:", err);
+    res.status(500).json({ status: false, message: "Failed to login" });
+  }
 };
