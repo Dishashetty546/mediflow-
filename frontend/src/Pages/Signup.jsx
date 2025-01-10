@@ -4,6 +4,21 @@ import avatar from '../assets/images/doctor-img01.png';
 
 const Signup = () => {
   const [selectedImage, setSelectedImage] = useState(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    
+    email: '',
+    password: '',
+    photo: null, // Adjusted from selectedFile
+    gender: '',
+    role: 'patient'
+  });
+
+  // Handle form input change
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
   // Handle image upload
   const handleImageChange = (e) => {
@@ -14,7 +29,16 @@ const Signup = () => {
         setSelectedImage(reader.result); // Set the preview image
       };
       reader.readAsDataURL(file);
+      setFormData({ ...formData, photo: file }); // Store file in form data
     }
+  };
+
+  // Handle form submission
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Validate form fields here before submission
+    console.log('Form submitted with data:', formData);
+    // Add logic to send data to backend
   };
 
   return (
@@ -32,20 +56,37 @@ const Signup = () => {
             <h2 className='text-2xl font-bold text-headingColor mb-6'>
               Create an Account
             </h2>
-            <form>
+            <form onSubmit={handleSubmit}>
+              <div className='mb-5'>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder='Enter your name'
+                  className='w-full p-3 border rounded'
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
               <div className='mb-5'>
                 <input
                   type="email"
+                  name="email"
                   placeholder='Enter your email'
                   className='w-full p-3 border rounded'
+                  value={formData.email}
+                  onChange={handleChange}
                   required
                 />
               </div>
               <div className='mb-5'>
                 <input
                   type="password"
+                  name="password"
                   placeholder='Enter your password'
                   className='w-full p-3 border rounded'
+                  value={formData.password}
+                  onChange={handleChange}
                   required
                 />
               </div>
@@ -56,6 +97,8 @@ const Signup = () => {
                 <select
                   id="role"
                   name="role"
+                  value={formData.role}
+                  onChange={handleChange}
                   className='w-full p-3 border rounded bg-white'
                   required
                 >
@@ -70,6 +113,8 @@ const Signup = () => {
                 <select
                   id="gender"
                   name="gender"
+                  value={formData.gender}
+                  onChange={handleChange}
                   className='w-full p-3 border rounded bg-white'
                   required
                 >
