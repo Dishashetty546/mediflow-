@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import signupImg from '../assets/images/signup.gif';
-import avatar from '../assets/images/doctor-img01.png';
+import axios from 'axios';
+
 
 const Signup = () => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -33,13 +34,23 @@ const Signup = () => {
     }
   };
 
-  // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Validate form fields here before submission
-    console.log('Form submitted with data:', formData);
-    // Add logic to send data to backend
+    try {
+      const response = await axios.post('http://localhost:5000/api/v1/auth/register', {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password
+      });
+      alert('Signup successful!');
+      console.log(response.data); // The response data is already in JSON format
+    } catch (error) {
+      console.error('Error during signup:', error);
+      alert('Something went wrong. Please try again later.');
+    }
   };
+  
+  
 
   return (
     <section className='px-5 xl:px-0'>
