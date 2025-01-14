@@ -7,13 +7,11 @@ export const updateUser = async (req, res) => {
       { $ser: req.body },
       { new: true }
     );
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "succuessfullt updated",
-        data: updateUser,
-      });
+    res.status(200).json({
+      success: true,
+      message: "succuessfullt updated",
+      data: updateUser,
+    });
   } catch (err) {
     res
       .status(500)
@@ -43,7 +41,7 @@ export const getSingleUser = async (req, res) => {
 export const getAllUser = async (req, res) => {
   const id = req.params.id;
   try {
-    const User = await User.findByIdAndUpdate();
+    const User = await User.find({}).select("-password");
     res.status(200).json({ success: true, message: "Users found", data: User });
   } catch (err) {
     res
