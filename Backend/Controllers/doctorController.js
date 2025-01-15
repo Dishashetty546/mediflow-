@@ -1,9 +1,9 @@
-import User from "../Models/UserSchema.js";
+import Doctor from "../Models/DoctorSchema.js";
 
-export const updateUser = async (req, res) => {
+export const updateDoctor = async (req, res) => {
   const id = req.params.id;
   try {
-    const updateUser = await User.findByIdAndUpdate(
+    const updateDoctor = await Doctor.findByIdAndUpdate(
       id,
       { $set: req.body },
       { new: true }
@@ -11,7 +11,7 @@ export const updateUser = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Successfully updated",
-      data: updateUser,
+      data: updateDoctor,
     });
   } catch (err) {
     res.status(500).json({
@@ -22,10 +22,10 @@ export const updateUser = async (req, res) => {
   }
 };
 
-export const deleteUser = async (req, res) => {
+export const deleteDoctor = async (req, res) => {
   const id = req.params.id;
   try {
-    await User.findByIdAndDelete(id);
+    await Doctor.findByIdAndDelete(id);
     res.status(200).json({ success: true, message: "Successfully deleted" });
   } catch (err) {
     res.status(500).json({
@@ -36,38 +36,40 @@ export const deleteUser = async (req, res) => {
   }
 };
 
-export const getSingleUser = async (req, res) => {
+export const getSingleDoctor = async (req, res) => {
   const id = req.params.id;
   try {
-    const user = await User.findById(id);
-    if (!user) {
+    const Doctor = await Doctor.findById(id);
+    if (!Doctor) {
       return res.status(404).json({
         success: false,
-        message: "User not found",
+        message: "Doctor not found",
       });
     }
-    res.status(200).json({ success: true, message: "Data found", data: user });
+    res
+      .status(200)
+      .json({ success: true, message: "Data found", data: Doctor });
   } catch (err) {
     res.status(500).json({
       success: false,
-      message: "Failed to fetch user",
+      message: "Failed to fetch Doctor",
       error: err.message,
     });
   }
 };
 
-export const getAllUser = async (req, res) => {
+export const getAllDoctor = async (req, res) => {
   try {
-    const users = await User.find({}).select("-password");
+    const Doctors = await Doctor.find({}).select("-password");
     res.status(200).json({
       success: true,
-      message: "Users found",
-      data: users,
+      message: "Doctors found",
+      data: Doctors,
     });
   } catch (err) {
     res.status(500).json({
       success: false,
-      message: "Failed to fetch users",
+      message: "Failed to fetch Doctors",
       error: err.message,
     });
   }
