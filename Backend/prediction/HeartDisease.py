@@ -4,13 +4,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import StandardScaler
+import joblib  # For saving and loading the trained model
 
-# Load data
+# Load dataset
 heart_data = pd.read_csv("C:/Users/LENOVO/OneDrive/Desktop/mediflow--/Backend/dataset/heart.csv")
-
-# Check data
-print(heart_data.head())
-print(heart_data.describe())
 
 # Prepare data
 X = heart_data.drop(columns='target', axis=1)
@@ -19,14 +16,18 @@ Y = heart_data['target']
 # Split the dataset
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, stratify=Y, random_state=2)
 
-# Scale the data (important for convergence)
+# Scale the data
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
-# Initialize the Logistic Regression model
+# Initialize and train the Logistic Regression model
 model = LogisticRegression(max_iter=1000)  # Increase max_iter if necessary
 model.fit(X_train_scaled, Y_train)
+
+# Save the trained model
+joblib.dump(model, 'heart_disease_model.pkl')
+joblib.dump(scaler, 'scaler.pkl')
 
 # Accuracy on training data
 X_train_prediction = model.predict(X_train_scaled)
@@ -38,23 +39,22 @@ X_test_prediction = model.predict(X_test_scaled)
 test_data_accuracy = accuracy_score(X_test_prediction, Y_test)
 print('Accuracy on Test data : ', test_data_accuracy)
 
-# Input data for prediction
-input_data = (62, 0, 0, 140, 268, 0, 0, 160, 0, 3.6, 0, 2, 2)
+# Function to predict heart disease based on input data
+def predict_heart_disease(input_data):
+    # Load the trained model and scaler
+    model = joblib.load('heart_disease_model.pkl')
+    scaler = joblib.load('scaler.pkl')
 
-# Convert input data to numpy array and reshape it
-input_data_as_numpy_array = np.asarray(input_data).reshape(1, -1)
+    # Convert input data to numpy array and reshape
+    input_data_as_numpy_array = np.asarray(input_data).reshape(1, -1)
 
-# Convert the input data into a DataFrame with the same column names as X
-input_data_df = pd.DataFrame(input_data_as_numpy_array, columns=X.columns)
+    # Convert to DataFrame with the same column names as X
+    input_data_df = pd.DataFrame(input_data_as_numpy_array, columns=X.columns)
 
-# Scale the input data using the same scaler fitted on the training data
-input_data_scaled = scaler.transform(input_data_df)
+    # Scale the input data
+    input_data_scaled = scaler.transform(input_data_df)
 
-# Make prediction
-prediction = model.predict(input_data_scaled)
+    # Make prediction
+    prediction = model.predict(input_data_scaled)
 
-# Print the prediction result
-if (prediction[0] == 0):
-    print('The Person does not have a Heart Disease')
-else:
-    print('The Person has Heart Disease')
+    return prediction[0]
