@@ -11,10 +11,36 @@ const Login = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-    console.log('Form Submitted:', formData); // Replace with actual logic
+    try {
+      const response = await fetch('http://localhost:5000/api/v1/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+  
+      const result = await response.json();
+  
+      if (response.ok) {
+        console.log('Login Successful:', result);
+        // Save token to localStorage or cookies
+        localStorage.setItem('token', result.token);
+        // Redirect to dashboard or another page
+        window.location.href = '/dashboard';
+      } else {
+        console.error('Login Failed:', result.message);
+        // Show error to the user
+        alert(result.message);
+      }
+    } catch (err) {
+      console.error('An error occurred:', err);
+      alert('An unexpected error occurred. Please try again later.');
+    }
   };
+  
 
   return (
     <section className='px-5 lg:px-0'>
