@@ -7,12 +7,14 @@ import Contact from '../Pages/Contact';
 import Doctors from '../Pages/Doctors/Doctors';
 import DoctorDetails from '../Pages/Doctors/DoctorDetails';
 import { Routes, Route } from 'react-router-dom';
+import Sidebar from '../predicts/Sidebar';
 
 const Routerss = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/home" element={<Home />} />
+      <Route path="/sidebar" element={<Sidebar/>}/>
       <Route path="/services" element={<Services />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Signup />} />
