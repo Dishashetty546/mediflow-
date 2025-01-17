@@ -44,7 +44,8 @@ const PredictionForm = ({ disease }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const url = `http://127.0.0.1:5000/predict/${disease}`;
+    const url = `http://127.0.0.1:5000/predict/${disease.toLowerCase()}`; 
+
 
     try {
       const response = await fetch(url, {

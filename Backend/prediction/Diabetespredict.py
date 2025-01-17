@@ -4,6 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn import svm
 from sklearn.metrics import accuracy_score
 import joblib  # For saving and loading the trained model
+from flask import Flask, request, jsonify
 
 # Load dataset
 diabetes_dataset = pd.read_csv("C:/Users/LENOVO/OneDrive/Desktop/mediflow--/Backend/dataset/diabetes.csv")
@@ -45,3 +46,37 @@ def predict_diabetes(input_data):
 
     # Return prediction
     return prediction[0]
+
+# Initialize Flask app
+app = Flask(__name__)
+
+# Route to predict diabetes
+@app.route('/predict', methods=['POST'])
+@app.route('/predict', methods=['POST'])
+def predict():
+    # Get the input data from the POST request
+    data = request.get_json()
+
+    # Extract input data (assuming the correct keys in the input JSON)
+    input_data = [
+        data['Pregnancies'],
+        data['Glucose'],
+        data['BloodPressure'],
+        data['SkinThickness'],
+        data['Insulin'],
+        data['BMI'],
+        data['DiabetesPedigreeFunction'],
+        data['Age']
+    ]
+
+    # Make prediction using the function
+    prediction = predict_diabetes(input_data)
+
+    # Ensure the prediction result is serializable by converting to int
+    prediction = int(prediction)
+
+    # Return the prediction as a JSON response
+    if prediction == 1:
+        return jsonify({"prediction": "The person has diabetes."})
+    else:
+        return jsonify({"prediction": "The person does not have diabetes."})

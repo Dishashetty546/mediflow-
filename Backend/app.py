@@ -2,9 +2,9 @@ from flask import Flask, request, jsonify
 from prediction.HeartDisease import predict_heart_disease
 from prediction.Diabetespredict import predict_diabetes
 from prediction.ParkinsonsPredict import predict_parkinsons
-
+from flask_cors import CORS
 app = Flask(__name__)
-
+CORS(app)  
 # Endpoint for Heart Disease prediction
 @app.route('/predict/heart', methods=['POST'])
 def predict_heart():
