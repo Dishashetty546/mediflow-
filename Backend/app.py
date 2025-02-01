@@ -3,28 +3,42 @@ from prediction.HeartDisease import predict_heart_disease
 from prediction.Diabetespredict import predict_diabetes
 from prediction.ParkinsonsPredict import predict_parkinsons
 from flask_cors import CORS
+
 app = Flask(__name__)
-CORS(app)  
-# Endpoint for Heart Disease prediction
+CORS(app)
+
+# Endpoint for Heart Disease Prediction
 @app.route('/predict/heart', methods=['POST'])
 def predict_heart():
-    data = request.get_json()  # Get input data as JSON
-    prediction = predict_heart_disease(data)
-    return jsonify({'prediction': prediction})
+    try:
+        data = request.get_json()
+        print("Received input for Heart Disease:", data)  # Debugging
+        prediction = predict_heart_disease(data)
+        return jsonify({'prediction': bool(prediction)})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
-# Endpoint for Diabetes prediction
+# Endpoint for Diabetes Prediction
 @app.route('/predict/diabetes', methods=['POST'])
 def predict_diabetes_route():
-    data = request.get_json()
-    prediction = predict_diabetes(data)
-    return jsonify({'prediction': prediction})
+    try:
+        data = request.get_json()
+        print("Received input for Diabetes:", data)  # Debugging
+        prediction = predict_diabetes(data)
+        return jsonify({'prediction': bool(prediction)})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
-# Endpoint for Parkinson's prediction
+# Endpoint for Parkinson's Prediction
 @app.route('/predict/parkinsons', methods=['POST'])
 def predict_parkinsons_route():
-    data = request.get_json()
-    prediction = predict_parkinsons(data)
-    return jsonify({'prediction': prediction})
+    try:
+        data = request.get_json()
+        print("Received input for Parkinson's:", data)  # Debugging
+        prediction = predict_parkinsons(data)
+        return jsonify({'prediction': bool(prediction)})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -12,6 +12,7 @@ from sklearn.metrics import accuracy_score,confusion_matrix
 #creating a dictionary to store all these models
 models={
     "SVC":SVC(kernel='linear'),
+    
     "RandomForest":RandomForestClassifier(n_estimators=100,random_state=42),
     "GradientBoosting":GradientBoostingClassifier(n_estimators=100,random_state=42),
     "KNeighbors":KNeighborsClassifier(n_neighbors=5),

@@ -5,6 +5,7 @@ const PredictionForm = ({ disease }) => {
   const [prediction, setPrediction] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [errorMessage, setErrorMessage] = useState(""); // New state for error messages
 
   const fields = {
     heart: ["age", "sex", "cp", "trestbps", "chol", "fbs", "restecg", "thalach"],
@@ -21,15 +22,16 @@ const PredictionForm = ({ disease }) => {
     parkinsons: ["MDVP_Fo", "MDVP_Fhi", "MDVP_Flo", "Shimmer", "HNR", "RPDE"],
   };
 
+  const numericFields = new Set([
+    "age", "sex", "cp", "trestbps", "chol", "fbs", "restecg", "thalach",
+    "Pregnancies", "Glucose", "BloodPressure", "SkinThickness", "Insulin",
+    "BMI", "DiabetesPedigreeFunction", "Age",
+    "MDVP_Fo", "MDVP_Fhi", "MDVP_Flo", "Shimmer", "HNR", "RPDE"
+  ]);
+
   const validateInput = (name, value) => {
-    const numericFields = [
-      "age", "chol", "trestbps", "thalach", "Glucose", "BloodPressure",
-      "SkinThickness", "Insulin", "BMI", "DiabetesPedigreeFunction"
-    ];
-    if (numericFields.includes(name)) {
-      if (isNaN(value)) {
-        return "Please enter a valid number.";
-      }
+    if (numericFields.has(name) && isNaN(value)) {
+      return "Please enter a valid number.";
     }
     return "";
   };
@@ -37,15 +39,24 @@ const PredictionForm = ({ disease }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     const error = validateInput(name, value);
-    setErrors({ ...errors, [name]: error });
-    setFormData({ ...formData, [name]: value });
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: error,
+    }));
+
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: numericFields.has(name) ? Number(value) : value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const url = `http://127.0.0.1:5000/predict/${disease.toLowerCase()}`; 
+    setErrorMessage(""); // Reset error messages
 
+    const url = `http://127.0.0.1:5000/predict/${disease.toLowerCase()}`;
 
     try {
       const response = await fetch(url, {
@@ -55,10 +66,15 @@ const PredictionForm = ({ disease }) => {
       });
 
       const data = await response.json();
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
       setPrediction(data.prediction);
     } catch (error) {
       console.error("Error:", error);
-      alert("An error occurred while making the prediction.");
+      setErrorMessage(error.message);
     } finally {
       setLoading(false);
     }
@@ -73,10 +89,7 @@ const PredictionForm = ({ disease }) => {
       <form onSubmit={handleSubmit} className="space-y-4">
         {fields[disease].map((field) => (
           <div key={field} className="relative">
-            <label
-              htmlFor={field}
-              className="block text-gray-700 font-medium mb-2"
-            >
+            <label htmlFor={field} className="block text-gray-700 font-medium mb-2">
               {field.charAt(0).toUpperCase() + field.slice(1)}
             </label>
             <input
@@ -98,7 +111,7 @@ const PredictionForm = ({ disease }) => {
             )}
           </div>
         ))}
-        
+
         <button
           type="submit"
           className={`w-full py-3 px-4 rounded-lg text-white font-semibold transition-all duration-300 ${
@@ -110,14 +123,16 @@ const PredictionForm = ({ disease }) => {
         </button>
       </form>
 
+      {errorMessage && (
+        <div className="mt-4 text-center text-red-600 font-semibold">
+          {errorMessage}
+        </div>
+      )}
+
       {prediction !== null && (
         <div className="mt-6 text-center">
           <h3 className="text-lg font-bold">Prediction Result:</h3>
-          <p
-            className={`text-xl ${
-              prediction ? "text-green-500" : "text-red-500"
-            }`}
-          >
+          <p className={`text-xl ${prediction ? "text-green-500" : "text-red-500"}`}>
             {prediction ? "Positive" : "Negative"}
           </p>
         </div>
