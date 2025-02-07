@@ -8,6 +8,7 @@ from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.neighbors import KNeighborsClassifier
 import pickle
 
+
 # Load dataset
 dataset_path = "C:/Users/LENOVO/OneDrive/Desktop/mediflow--/Backend/dataset/"
 df = pd.read_csv(os.path.join(dataset_path, "Training.csv"))
@@ -95,3 +96,4 @@ print(f"🛑 **Precautions:** {', '.join([p[0] for p in pre]) if isinstance(pre[
 print(f"💊 **Medications:** {', '.join(med)}\n")
 print(f"🥗 **Diet Recommendations:** {', '.join(die)}\n")
 print(f"🏋️ **Workout Suggestions:** {', '.join(wrkout)}\n")
+
