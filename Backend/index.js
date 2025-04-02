@@ -15,19 +15,35 @@ const port = process.env.PORT || 8000;
 
 // Database connection
 mongoose.set("strictQuery", false);
+// Database connection
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URL);
     console.log("MongoDB database is connected");
   } catch (err) {
     console.error("MongoDB database connection failed:", err);
-    process.exit(1); // Exit process if the DB connection fails
+    process.exit(1); // Stop server if DB connection fails
   }
 };
 
+// Connect to DB before starting the server
+connectDB().then(() => {
+  app.listen(port, "0.0.0.0", () => {
+    console.log(`Server is running on port ${port}`);
+  });
+});
+
 // Middleware
 app.use(express.json());
-app.use(cors());
+
+app.use(
+  cors({
+    origin: "http://localhost:3000", // The frontend's URL
+    methods: "GET,POST,PUT,DELETE",
+    credentials: true,
+  })
+);
+
 app.use(cookieParser());
 
 // Routes
@@ -40,7 +56,3 @@ app.get("/", (req, res) => {
 });
 
 // Start server
-app.listen(port, "0.0.0.0", () => {
-  connectDB();
-  console.log(`Server is running on port ${port}`);
-});

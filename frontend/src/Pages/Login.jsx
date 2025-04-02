@@ -12,34 +12,36 @@ const Login = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
     try {
       const response = await fetch('http://localhost:5000/api/v1/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          email: formData.email, // Ensure email and password are sent correctly
+          password: formData.password
+        }),
       });
   
       const result = await response.json();
   
       if (response.ok) {
         console.log('Login Successful:', result);
-        // Save token to localStorage or cookies
-        localStorage.setItem('token', result.token);
-        // Redirect to dashboard or another page
-        window.location.href = '/dashboard';
+        localStorage.setItem('token', result.token);  // Store token in localStorage
+        window.location.href = '/dashboard';  // Redirect to dashboard
       } else {
         console.error('Login Failed:', result.message);
-        // Show error to the user
-        alert(result.message);
+        alert(result.message || 'Something went wrong');  // Show error message from backend
       }
     } catch (err) {
       console.error('An error occurred:', err);
       alert('An unexpected error occurred. Please try again later.');
     }
   };
+  
+  
   
 
   return (

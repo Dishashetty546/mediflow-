@@ -35,20 +35,26 @@ const Signup = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form submission
     try {
       const response = await axios.post('http://localhost:5000/api/v1/auth/register', {
-        username: formData.username,
+        name: formData.name,  // Correcting 'username' to 'name'
         email: formData.email,
         password: formData.password
       });
-      alert('Signup successful!');
-      console.log(response.data); // The response data is already in JSON format
+  
+      if (response.status === 200) {
+        alert('Signup successful!');
+        console.log(response.data);
+      } else {
+        alert('Something went wrong. Please try again later.');
+      }
     } catch (error) {
       console.error('Error during signup:', error);
       alert('Something went wrong. Please try again later.');
     }
   };
+  
   
   
 
